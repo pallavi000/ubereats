@@ -9,17 +9,17 @@ import Dashboard from './admin/Dashboard/Dashboard';
 import CompanyProtected from './auth/protected/CompanyProtected'
 import CompanyRegister from './auth/CompanyRegister';
 import CategoryIndex from './admin/category/CategoryIndex';
-import CategoryCreate from './admin/category/CategoryCreate';
-import CategoryEdit from './admin/category/CategoryEdit';
 import MenuIndex from './admin/menu/MenuIndex';
-import CreateMenu from './admin/menu/CreateMenu';
-import EditMenu from './admin/menu/EditMenu';
+
 import MenuItemIndex from './admin/menuItem.js/MenuItemIndex';
 import CreateMenuItem from './admin/menuItem.js/CreateMenuItem';
 import EditMenuItem from './admin/menuItem.js/EditMenuItem';
 import CategoryPage from './layouts/CompanyPage';
 import CompanyPage from './layouts/CompanyPage';
 import Footer from './global/Footer';
+import Profile  from './layouts/profile/Profile'
+import Protected from './auth/protected/Protected'
+import ChangePassword from './layouts/profile/ChangePassword';
 
 axios.defaults.baseURL="http://localhost:5000/api"
 
@@ -41,6 +41,10 @@ function App() {
       <Route exact path="/company/register" element={<CompanyRegister/>}/>
       <Route exact path="/company-page/:id" element={<CompanyPage/>}/>
 
+        <Route exact path="/profile" element={<Profile/>}/>
+        <Route exact path="/change-password" element={<ChangePassword/>}/>
+  
+
       <Route exact path="/dashboard" element={<CompanyProtected/>}>
         <Route exact path="/dashboard" element={<Dashboard/>}/>
     </Route>
@@ -49,24 +53,12 @@ function App() {
         <Route exact path="/admin/category" element={<CategoryIndex/>}/>
     </Route>
 
-    <Route exact path="/admin/category/create" element={<CompanyProtected/>}>
-        <Route exact path="/admin/category/create" element={<CategoryCreate/>}/>
-    </Route>
-    <Route exact path="/admin/category/edit/:id" element={<CompanyProtected/>}>
-        <Route exact path="/admin/category/edit/:id" element={<CategoryEdit/>}/>
-    </Route>
+
 
     <Route exact path="/admin/menu" element={<CompanyProtected/>}>
         <Route exact path="/admin/menu" element={<MenuIndex/>}/>
     </Route>
 
-    <Route exact path="/admin/menu/create" element={<CompanyProtected/>}>
-        <Route exact path="/admin/menu/create" element={<CreateMenu/>}/>
-    </Route>
-
-    <Route exact path="/admin/menu/edit/:id" element={<CompanyProtected/>}>
-        <Route exact path="/admin/menu/edit/:id" element={<EditMenu/>}/>
-    </Route>
 
     
     <Route exact path="/admin/menu-item" element={<CompanyProtected/>}>

@@ -152,4 +152,35 @@ router.delete('/:id',auth, async(req, res) => {
     }
 })
 
+
+
+router.post('/change-password',auth,async(req,res)=>{
+    try {
+        if(req.body.newpassword!=req.body.confirmpassword){
+            return res.status(400).send('password did not match')
+        }
+
+        let user = await User.findById(req.user._id)
+        if(!user){
+            return res.status(404).send('user not found')
+        }
+      
+        var valid = await bcrypt.compare(req.body.currentpassword,user.password)
+        if(!valid){
+            return res.status(400).send('Invalid password')
+        }
+
+        
+        var salt = await bcrypt.genSalt(10)
+        var hashPassword =await bcrypt.hash(req.body.newpassword,salt)
+        user.password = hashPassword
+        await user.save()
+        res.send('Password has been changed')
+        
+        
+        
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
 module.exports = router

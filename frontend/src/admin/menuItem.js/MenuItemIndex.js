@@ -2,7 +2,8 @@ import axios from 'axios'
 import React, { useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import DataTable from 'react-data-table-component';
-
+import * as Toastr from 'toastr';
+import '../../../node_modules/toastr/build/toastr.css'
 
 import $ from 'jquery'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -11,6 +12,7 @@ import { Oval } from  'react-loader-spinner'
 function MenuItemIndex() {
     const [menuItems,setMenuItems] = useState([])
     const [is_loader,setIs_loader] = useState(false)
+    const [deleteId, setDeleteId] = useState(0)
     
     const token = localStorage.getItem('token')
 
@@ -45,14 +47,17 @@ function MenuItemIndex() {
     
 
    async function distroy(e,id){
+    setDeleteId(id)
       try {
         const response = await axios.delete('/menuitem/'+id,config)
-        console.log(response.data)
-       var newmenu=  menuItems.filter(cat=>cat._id!=id)
-       setMenuItems(newmenu)
+        var newmenu=  menuItems.filter(cat=>cat._id!=id)
+        setMenuItems(newmenu)
+        setDeleteId(0)
+        Toastr.success('Item Deleted Successfully', 'Success')
       } catch (error) {
+        setDeleteId(0)
+        Toastr.error('Internal Server Error', 'Error')
         console.log(error.request.response)
-        
       }
     }
 
@@ -110,8 +115,25 @@ function MenuItemIndex() {
           {
             name:<th>Action</th>,
             cell:(item)=><>   
-               <Link className="btn btn-primary mr-3" to={`/admin/menu-item/edit/${item._id}`}>Edit</Link>
-            <button className="btn btn-danger" onClick={(e)=>distroy(e,item._id)} >Delete</button>
+               <Link className="btn btn-primary mr-3" to={`/admin/menu-item/edit/${item._id}`}>
+                <i className='fa fa-pen-alt'/>
+               </Link>
+               {deleteId==item._id?(
+                <button className="btn btn-danger" disabled>
+                  <Oval
+                  width={16}
+                  height={16}
+                  color='#fff'
+                  ariaLabel='loading'
+                  secondaryColor="#ddd"
+                  strokeWidth={4}
+                  />
+                </button>
+               ):(
+                <button className="btn btn-danger" onClick={(e)=>distroy(e,item._id)} >
+                  <i className='fa fa-trash'/>
+                </button>
+               )}
             </>,
             grow:2
 

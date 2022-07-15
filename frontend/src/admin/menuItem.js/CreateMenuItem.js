@@ -3,6 +3,12 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as Toastr from 'toastr';
 import '../../../node_modules/toastr/build/toastr.css'
+import Select from 'react-select'
+import { Oval } from 'react-loader-spinner';
+import { DefaultEditor } from 'react-simple-wysiwyg';
+import $ from 'jquery'
+import CategoryCreateModal from '../category/CategoryCreateModal';
+import MenuCreateModal from '../menu/MenuCreateModal'
 
 function CreateMenuItem() {
     const[name,setName] = useState('')
@@ -38,8 +44,8 @@ function CreateMenuItem() {
         try {
             const response = await axios.get('/menuitem/elements',config)
             console.log(response.data)
-            setCategories(response.data.category)
-            setMenus(response.data.menu)
+            setCategories(createSelectOptions(response.data.category))
+            setMenus(createSelectOptions(response.data.menu))
         } catch (error) {
             console.log(error.request.response)
         }
@@ -47,6 +53,22 @@ function CreateMenuItem() {
 
     async function addmenuitem(e){
         e.preventDefault()
+        if(!image) {
+          Toastr.error('Thumbnail is required.', 'Error')
+          return false
+        }
+        if(!detail) {
+          Toastr.error('Menu Item Detail is required.', 'Error')
+          return false
+        }
+        if(!category_id) {
+          Toastr.error('Category is required.', 'Error')
+          return false
+        }
+        if(!menu_id) {
+          Toastr.error('Menu is required.', 'Error')
+          return false
+        }
         setIsLoading(true)
         
         
@@ -77,80 +99,150 @@ function CreateMenuItem() {
 
     }
 
+    function createSelectOptions(items) {
+      var arr = []
+      items.forEach(item => {
+        arr.push({
+          value: item._id,
+          label: item.name
+        })
+      });
+      return arr
+    }
+
+    function imageChanged(e) {
+      console.log(e.target.files)
+      if(e.target.files && e.target.files.length>0) {
+        const objectUrl = URL.createObjectURL(e.target.files[0])
+        $('.image-input').css('background-image', `url(${objectUrl})`)
+        setImage(e.target.files[0])
+      }
+    }
+    
+
   return (
     <div className="content-wrapper">
-    <div className="container ">
- 
-        <div className=' card-body d-flex align-items-center'>
-        <div className='back-icon' onClick={()=>navigate(-1)}>
-            <i class="fa-solid fa-arrow-left-long"></i>
+    <div className="container-fluid py-5 px-5">
+
+    <CategoryCreateModal
+      callback={getElement}
+    />
+    <MenuCreateModal
+    callback={getElement}
+    />
+
+
+    <div class="card card-flush">
+        <div class="card-header">
+          <div class="card-title d-flex align-items-center my-0">
+            <div className='back-icon' onClick={()=>navigate(-1)}>
+              <i class="fa-solid fa-arrow-left-long"></i>
             </div>
-        <h2 className=''>Add menu</h2>
-           
+            <h2>Add Menu Item</h2>
+          </div>
         </div>
-        <div className='w-75 '>
-      <div className='card-body'>
-      <form onSubmit={(e)=>addmenuitem(e)}>
-    <div className="form-group">
-      <label htmlFor="formGroupExampleInput">MenuItem Name</label>
-      <input type="text" className="form-control color"  name="name" onChange={(e)=>setName(e.target.value)}  id="formGroupExampleInput" placeholder="menu Name" required/>
-    </div>
-    <div className="form-group">
-      <label htmlFor="formGroupExampleInput">MenuItem Detail</label>
-      <textarea type="text" className="form-control color"  name="name" onChange={(e)=>setDetail(e.target.value)} rows={4}  id="formGroupExampleInput" placeholder="menu Name" required></textarea>
-    </div>
-    <div className="form-group">
-      <label htmlFor="formGroupExampleInput">MenuItem Price</label>
-      <input type="text" className="form-control color"  name="name" onChange={(e)=>setPrice(e.target.value)}  id="formGroupExampleInput" placeholder="menu Name" required/>
-    </div>
-    <div className="form-group">
-      <label htmlFor="formGroupExampleInput">MenuItem Tax</label>
-      <input type="text" className="form-control color"  name="name" onChange={(e)=>setTax(e.target.value)}  id="formGroupExampleInput" placeholder="menu Name" required/>
-    </div>
-    <div className="form-group">
-      <label htmlFor="formGroupExampleInput">MenuItem SKU</label>
-      <input type="text" className="form-control color"  name="name" onChange={(e)=>setSku(e.target.value)}  id="formGroupExampleInput" placeholder="menu Name" required/>
-    </div>
-    <div className="form-group">
-      <label htmlFor="formGroupExampleInput">Select Menu</label>
-      <select className='form-control' onChange={(e)=>setMenu_id(e.target.value)}>
-      <option value="">Select Menu</option>
-   {menus.map(menu=>{
-     return(
-          <option value={menu._id}>{menu.name}</option>
-     )
-   })}  
-      </select>
-    </div>
+        <div class="card-body pt-5 mt-5">
 
-    <div className="form-group">
-      <label htmlFor="formGroupExampleInput">Select Category</label>
-      <select className='form-control' onChange={(e)=>setCategory_id(e.target.value)}>
-      <option value="">Select Category</option>
-   {categories.map(menu=>{
-     return(
-          <option value={menu._id}>{menu.name}</option>
-     )
-   })}  
-      </select>
-    </div>
+        <form onSubmit={(e)=>addmenuitem(e)}>
 
-   
+          <div class="form-group row">
+            <div className='col col-md-4 text-center'>
+              <label class="required form-label d-block mb-2">Cover Image/Thumbnail</label>
+              <input type="file" className="form-control d-none" id='menu-item-image' onChange={(e)=>imageChanged(e)}/>
+              <label className='image-input image-input-empty image-input-outline image-input-placeholder mb-3' htmlFor="menu-item-image">
+                <div class="image-input-wrapper"></div>
+              </label>
+              <small class="text-muted form-text">
+                Set the Item thumbnail image. Only *.png, *.jpg and *.jpeg image files are accepted
+              </small>
+            </div>
+            <div className='col col-md-8'>
+              <label class="required form-label">Menu Item Name</label>
+              <input type="text" name="product_name" class="form-control mb-2" placeholder="Menu Item name"  onChange={(e)=>setName(e.target.value)} required/>
+              <small class="text-muted form-text">A Menu Item name is required and recommended to be unique.</small>
+            </div>
+          </div>
 
+          <div className="form-group">
+            <label class="required form-label">Product Detail</label>
+            <DefaultEditor value={detail} onChange={(e)=>setDetail(e.target.value)} style={{minHeight: "150px"}}/>
+          </div>
 
-    <div className="form-group">
-      <label htmlFor="formGroupExampleInput">MenuItem Image</label>
-      <input type="file" className="form-control color"  name="name" onChange={(e)=>setImage(e.target.files[0])}  id="formGroupExampleInput" placeholder="menu Name" required/>
-    </div>
-    {isLoading?(
-      <button type="submit" className="btn btn-start loading-btn" disabled>Submitting..</button>
-    ):( 
-        <button type="submit" className="btn btn-start">Submit</button>
-)}
-  </form>
+          <div className='form-group row'>
+            <div className='col'>
+              <label class="required form-label">Price</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">$</span>
+                </div>
+                <input type="number" class="form-control" placeholder="Price"  onChange={(e)=>setPrice(e.target.value)} required/>
+                <div class="input-group-append">
+                  <span class="input-group-text">.00</span>
+                </div>
+              </div>
+            </div>
+            <div className='col'>
+              <label class="required form-label">Tax</label>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" placeholder="Tax"  onChange={(e)=>setTax(e.target.value)} required/>
+                <div class="input-group-append">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className='form-group row'>
+            <div className='col'>
+              <label class="required form-label">Menu</label>
+              {menus && menus.length>0?(
+              <Select options={menus} onChange={({value})=>setMenu_id(value)} required/>
+              ):(
+                <button type='button' className='btn btn-primary btn-sm d-block' data-toggle="modal" data-target="#menuModal">Create Menu</button>
+              )}
+            </div>
+            <div className='col'>
+              <label class="required form-label">Categories</label>
+              {categories && categories.length>0 ?(
+              <Select options={categories} onChange={({value})=>setCategory_id(value)} required/>
+              ):(
+                  <button type='button' className='btn btn-primary btn-sm d-block' data-toggle="modal" data-target="#categoryModal">Create Category</button>
+              )}
+            </div>
+          </div>
+
+          <div className='form-group row'>
+            <div className='col col-md-6'>
+              <label class="required form-label">SKU</label>
+              <input type="text" className="form-control" placeholder='SKU' onChange={(e)=>setSku(e.target.value)} required/>
+            </div>
+          </div>
+
+          <div className='form-group col'>
+          {isLoading?(
+            <button class="custom-btn btn-7" disabled><span>
+              <Oval
+                height="20"
+                width="20"
+                color='#590696'
+                ariaLabel='loading'
+                secondaryColor="#ddd"
+                strokeWidth={4}
+              />
+            </span></button>
+          ):( 
+             <button class="custom-btn btn-7"><span>Submit</span></button>
+          )}
+
+          </div>
+          
+          </form>
+          
+        </div>
+        
       </div>
-    </div>
 
+    
     </div>
     
     </div>

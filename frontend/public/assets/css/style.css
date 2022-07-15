@@ -2,12 +2,25 @@
     background: #f7c621;
     background-color: #f7c621 !important;
     padding: 1rem 2rem;
-    
-
+}
+a{
+    color: black;
+    text-decoration: none !important;
+}
+a:hover{
+    text-decoration: none;
+    color: black;
 }
 .navbar-brand{
     font-size: 36px;
     font-weight: 600;
+    background: transparent;
+    border: 0px;
+
+}
+.navbar-brand span{
+    font-size: 28px;
+    font-weight: 600;  
 }
 .login-btn{
     background: white;
@@ -249,6 +262,7 @@
     height: 150px;
     width: 100%;
     position: relative;
+    display: block;
 }
 .product-image img{
     height: 100%;
@@ -277,4 +291,125 @@
 .row{
     margin-right: 0px !important;
     margin-left: 0px !important;
+}
+.product-sorting{
+    padding: 1rem 0rem;
+}
+.sort-title{
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+.filter-sort-name{
+    margin-left: 16px;
+    font-size: 14px;
+    font-weight: 500;
+}
+.profile-image{
+    height: 50px;
+    width: 50px;
+    margin-right: 1rem;
+}
+.profile-image img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.profile-name{
+    font-weight: 500;
+    text-decoration: none !important;
+    color: black !important;
+}
+.profile-link{
+    color: rgb(4, 136, 72);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none !important;
+ 
+}
+.profile-tab-container{
+    font-size: 18px;
+    font-weight: 500;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+.offcanvas-body{
+    padding-left: 2rem !important;
+}
+.signout-btn{
+    color: rgb(107, 107, 107);
+    font-weight: 500;
+    font-size: 16px;
+    font-size: 16px;
+    margin-top: 1rem;
+}
+.profile-side-item{
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+.profile-setting-image{
+    height: 70px;
+    width: 70px;
+}
+.profile-setting-image img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.profile-setting-name{
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 36px;
+    margin-bottom: 8px;
+}
+
+.frontend-profile-section{
+    padding: 2rem;
+    background-color: white !important;
+}
+.profile-setting-header{
+    gap: 2rem;
+}
+.profile-setting-form{
+    padding: 2rem 0rem;
+}
+
+.profile-setting-form input{
+    box-shadow: 0 2px 6px transparent;
+    FONT-WEIGHT: 200;
+    FONT-WEIGHT: 200;
+    FONT-WEIGHT: 600;
+    FONT-WEIGHT: 600;
+    background-color: #F5F5F5;
+    border: 0px;
+    padding: 14px 17px;
+    font-weight: 14px;
+    font-size: 14px;
+    font-weight: 400;
+    outline: 0px;
+    width: 50%;
+    border-radius: 4px;
+}
+
+.profile-change-password{
+    color: #276EF1;
+    background-color: #F5F5F5;
+    border: 0px;
+    padding: 11px 17px;
+    font-weight: 14px;
+    font-size: 14px;
+    font-weight: 400;
+    outline: 0px;
+    width: fit-content;
+    border-radius: 4px;
+    border: 0.5px solid #276EF1;
+}
+.profile-update-btn{
+    border: 0px;
+    background-color: #276EF1;
+    padding: 10px 14px;
+    color: white;
+    border-radius: 4px;
 }

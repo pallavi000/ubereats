@@ -7,10 +7,16 @@ import DataTable from 'react-data-table-component';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { Oval } from  'react-loader-spinner'
 import { format } from 'timeago.js';
+import CategoryCreateModal from './CategoryCreateModal';
+import CategoryEditModal from './CategoryEditModal';
+import * as Toastr from 'toastr';
+import '../../../node_modules/toastr/build/toastr.css'
+
 
 function CategoryIndex() {
     const [categories,setCategories] = useState([])
     const [is_loader,setIs_loader] = useState(false)
+    const[deleteId,setDeleteId] = useState(0)
     
     const token = localStorage.getItem('token')
 
@@ -42,14 +48,17 @@ function CategoryIndex() {
     
 
    async function distroy(e,id){
+    setDeleteId(id)
       try {
         const response = await axios.delete('/category/'+id,config)
         console.log(response.data)
        var newcategory=  categories.filter(cat=>cat._id!=id)
        setCategories(newcategory)
+       setDeleteId(0)
+       Toastr.success('Category Deleted Successfully', 'Success')
       } catch (error) {
-        console.log(error.request.response)
-        
+        setDeleteId(0)
+        Toastr.error('Internal Server Error', 'Error')
       }
     }
 
@@ -72,8 +81,30 @@ function CategoryIndex() {
           {
             name:<th>Action</th>,
             cell:(item)=><>   
-               <Link className="btn btn-primary mr-3" to={`/admin/category/edit/${item._id}`}>Edit</Link>
-            <button className="btn btn-danger" onClick={(e)=>distroy(e,item._id)} >Delete</button>
+               <CategoryEditModal
+                  category={item}
+                  categories={categories}
+                  setCategories={setCategories}
+                />
+               <button className="btn btn-primary mr-3" data-toggle="modal" data-target={`#editCategoryModal${item._id}`}>
+                <i className='fa fa-pen-alt'/>
+               </button>
+               {deleteId==item._id?(
+                <button className="btn btn-danger" disabled>
+                  <Oval
+                  width={16}
+                  height={16}
+                  color='#fff'
+                  ariaLabel='loading'
+                  secondaryColor="#ddd"
+                  strokeWidth={4}
+                  />
+                </button>
+               ):(
+                <button className="btn btn-danger" onClick={(e)=>distroy(e,item._id)} >
+                  <i className='fa fa-trash'/>
+                </button>
+               )}
             </>,
             
 
@@ -88,12 +119,17 @@ function CategoryIndex() {
     <div className="content-wrapper">
         <div className="container-fluid mt-5 px-5 ">
 
+        <CategoryCreateModal
+          categories={categories}
+          setCategories={setCategories}
+        />
+
         <DataTable
             columns={columns}
             data={categories}
             pagination
             title='Category'
-            actions={<Link className="btn btn-primary" to='/admin/category/create' >Create</Link>}
+            actions={<button className="btn btn-primary" data-toggle="modal" data-target="#categoryModal">Create</button>}
             progressPending={is_loader}
             progressComponent={ <Oval
             height="40"
