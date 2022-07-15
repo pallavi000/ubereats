@@ -45,15 +45,33 @@ router.post('/company/register', async(req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashPassword = await bcrypt.hash(req.body.password,salt)
 
-        let company = new Company({
+        let picture=''
+        if(req.files.image){
+            const image = req.files.image
+            console.log(image)
+           var r= Math.random()
+            r= r.toString().replace('.','-')
+            var is_error= false
+            const imageName = new Date().getDate()+r+'.'+image.name.split('.').pop()
 
+             picture = '/assets/images/'+imageName
+            const uploadPath = process.env.IMAGE_UPLOAD_PATH+"/"+imageName
+
+           image.mv(uploadPath,(error)=>{
+            is_error= error
+           })
+           if(is_error){
+            return  res.status(500).send(is_error)
+           }
+        }
+
+        let company = new Company({
             company_name:req.body.company_name,
             address : req.body.address,
             city : req.body.city,
             country : req.body.country,
-            postal_code:req.body.postal_code
-           
-          
+            postal_code:req.body.postal_code,
+            image:picture
         })
         company = await company.save()
 

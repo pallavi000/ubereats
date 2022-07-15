@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {Link,useNavigate,useLocation} from 'react-router-dom'
 import $ from 'jquery'
 
@@ -12,99 +12,112 @@ const navigate = useNavigate();
     navigate('/');
   }
    
-  let sidebar = document.querySelector(".sidebar");
-  let closeBtn = document.querySelector("#btn");
-  let searchBtn = document.querySelector(".bx-search");
-
-
-  function dashboard(){
-    $('.sidebar').toggleClass("open");
-    menuBtnChange();
-  }
+    
   
-  // following are the code to change sidebar button(optional)
-  function menuBtnChange() {
-    if($('.sidebar').hasClass("open")){
-      $('#btn').removeClass("fa-bars");
-      $('#btn').addClass("fa-align-right")
-    }else {
-       $('#btn').removeClass("fa-align-right")
-       $('#btn').addClass("fa-bars");
-    }
-   }
+  useEffect(() => {
+    const body = document.querySelector('body');
+    const  sidebar = body.querySelector('nav');
+    const  toggle = body.querySelector(".toggle");
+    toggle.addEventListener("click" , () =>{
+      sidebar.classList.toggle("close");
+    })
+  }, [])
+  
+
+
+
+
+  function toggleSidebar() {
+    const  sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle("close");
+  }
+
 
 
 
     return (
-  <div class="sidebar">
-  <div class="logo-details">
-    <i class="fa fa-bandcamp icon" aria-hidden="true"></i>
-      <div class="logo_name">Logo</div>
-        <i class="fa fa-bars" id="btn" onClick={(e)=>dashboard(e)} aria-hidden="true"></i>
+      <div class="sidebar close">
+      <header>
+          <div class="image-text">
+              <span class="image">
+                  <img src="https://d3i4yxtzktqr9n.cloudfront.net/web-eats-v2/31ee382bd0e6ed84.svg" alt=""/>
+              </span>
+
+              <div class="text logo-text">
+                  <span class="name">UberEats</span>
+                  <span class="profession">{props.user.name}</span>
+              </div>
+          </div>
+
+          <i class='bx bx-chevron-right toggle' onClick={() => toggleSidebar()}></i>
+      </header>
+
+      <div class="menu-bar">
+          <div class="menu">
+
+              
+
+              <ul class="menu-links">
+                  <li class="sidebar-nav-links">
+                      <Link to="/dashboard">
+                          <i class='bx bx-home-alt icon' ></i>
+                          <span class="text nav-text">Dashboard</span>
+                      </Link>
+                  </li>
+
+                  <li class="sidebar-nav-links">
+                      <Link to="/admin/menu">
+                          <i class='bx bx-bar-chart-alt-2 icon' ></i>
+                          <span class="text nav-text">Menu</span>
+                      </Link>
+                  </li>
+
+                  <li class="sidebar-nav-links">
+                      <Link to="/admin/category">
+                          <i class='bx bx-bell icon'></i>
+                          <span class="text nav-text">Categories</span>
+                      </Link>
+                  </li>
+
+                  <li class="sidebar-nav-links">
+                      <Link to="/admin/menu-item">
+                          <i class='bx bx-pie-chart-alt icon' ></i>
+                          <span class="text nav-text">Menu Items</span>
+                      </Link>
+                  </li>
+
+                  <li class="sidebar-nav-links">
+                      <Link to="#">
+                          <i class='bx bx-heart icon' ></i>
+                          <span class="text nav-text">Payment Methods</span>
+                      </Link>
+                  </li>
+
+                  <li class="sidebar-nav-links">
+                      <Link to="#">
+                          <i class='bx bx-wallet icon' ></i>
+                          <span class="text nav-text">Analytics</span>
+                      </Link>
+                  </li>
+
+              </ul>
+          </div>
+
+          <div class="bottom-content">
+              <li class="">
+                  <a role={'button'} onClick={(e)=>logout(e)}>
+                      <i class='bx bx-log-out icon' ></i>
+                      <span class="text nav-text">Logout</span>
+                  </a>
+              </li>
+
+              
+              
+          </div>
+      </div>
+
   </div>
-  <ul class="nav-list">
-    <li>
-      <Link to="/dashboard">
-        <i class="fa fa-th-large" aria-hidden="true"></i>
-        <span class="links_name">Dashboard</span>
-      </Link>
-       <span class="tooltip">Dashboard</span>
-    </li>
-        <li>
-     <Link to="/admin/menu/index">
-       <i class="fa fa-audio-description" aria-hidden="true"></i>
-       <span class="links_name">Menu</span>
-     </Link>
-     <span class="tooltip">Menu</span>
-   </li>
-   <li>
-   <Link to="/admin/category/index">
-    <i class="fa fa-star" aria-hidden="true"></i>
-     <span class="links_name">Category</span>
-   </Link>
-   <span class="tooltip">Category</span>
- </li>
-   <li>
-     <Link to="/admin/menuitem">
-      <i class="fa fa-th" aria-hidden="true"></i>
-       <span class="links_name">Menu Item</span>
-     </Link>
-     <span class="tooltip">Menu Item</span>
-   </li>
 
-   <li>
-     <Link to="/withdraw">
-      <i class="fa fa-th" aria-hidden="true"></i>
-       <span class="links_name">Payment</span>
-     </Link>
-     <span class="tooltip">Payment</span>
-   </li>
-
-   <li>
-     <Link to="/transaction">
-      <i class="fa fa-th" aria-hidden="true"></i>
-       <span class="links_name">Analytics</span>
-     </Link>
-     <span class="tooltip">Analytics</span>
-   </li>
-
-  
- 
-   <li class="profile">
-       <div class="profile-details">
-       <Link to="/admin/profile">
-       <i class="fa fa-cog" aria-hidden="true"></i>
-
-         <div class="name_job">
-           <div class="name">user name</div>
-           <div class="job">{props.user?.name}</div>
-         </div>
-         </Link>
-       </div>
-       <i class="fa fa-sign-out" id ="log_out" onClick={()=>logout()} aria-hidden="true"></i>
-   </li>
-  </ul>
-</div>
 
     )
 }

@@ -2,6 +2,8 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as Toastr from 'toastr';
+import '../../../node_modules/toastr/build/toastr.css'
+
 
 function CreateMenu() {
     const[name,setName] = useState('')

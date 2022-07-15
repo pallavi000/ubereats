@@ -11,23 +11,22 @@ function CompanyRegister() {
     const[country,setCountry] = useState('')
     const[postal_code,setPostal_code] = useState('')
     const[company_name,setCompany_name] = useState('')
+    const[image,setImage] = useState('')
 
     async function register(e){
         e.preventDefault()
         try {
-            const data={
-                name,
-                email,
-                password,
-                phone,
-                address,
-                city,
-                country,
-                postal_code,
-                company_name
-            }
-            console.log(data)
-
+            const data= new FormData()
+            data.append('name',name)
+            data.append('email',email)
+            data.append('password',password)
+            data.append('address',address)
+            data.append('city',city)
+            data.append('country',country)
+            data.append('postal_code',postal_code)
+            data.append('company_name',company_name)
+            data.append('image',image)
+               
             const response = await axios.post('/user/company/register',data)
             console.log(response.data)
             
@@ -69,6 +68,11 @@ function CompanyRegister() {
                     <div className='form-group login-input'>
                         <input type="text" placeholder="Enter Company Postal Code" onChange={(e)=>setPostal_code(e.target.value)}/>
                     </div>
+
+                    <div className='form-group login-input'>
+                        <input type="file" placeholder="Enter Company Postal Code" onChange={(e)=>setImage(e.target.files[0])}/>
+                    </div>
+
                     <button type="submit" className='btn-signup'>Sign Up</button>
                 </form>
             </div>

@@ -6,7 +6,7 @@ const Authorization = require('../middleware/companyAuth')
 // Get all categorys
 router.get('/', Authorization, async(req, res) => {
     try {
-        const categorys = await Category.find()
+        const categorys = await Category.find({'company_id':req.user.company_id}).sort('-_id')
         res.send(categorys)
     } catch (error) {
         res.status(500).send(error.message)
@@ -18,7 +18,8 @@ router.post('/', Authorization, async(req, res) => {
     try {
         let category = new Category({
             name:req.body.name,
-            slug:req.body.name.replace(' ','-')
+            slug:req.body.name.replace(' ','-').toLowerCase(),
+            company_id:req.user.company_id
         })
         category = await category.save()
         res.send(category)
@@ -42,7 +43,8 @@ router.put('/:id', Authorization, async(req, res) => {
     try {
         const category = await Category.findByIdAndUpdate(req.params.id, {
             name:req.body.name,
-            slug:req.body.name.replace(' ','-')
+            slug:req.body.name.replace(' ','-').toLowerCase(),
+            company_id:req.user.company_id
         },{new: true})
         res.send(category)
     } catch (error) {

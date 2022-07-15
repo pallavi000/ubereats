@@ -1,10 +1,8 @@
 import axios from 'axios'
 import React, { useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
-
-import $ from 'jquery'
-import "datatables.net-dt/css/jquery.dataTables.min.css"
-import "datatables.net-dt/js/dataTables.dataTables"
+import DataTable from 'react-data-table-component';
+import {format} from 'timeago.js'
 
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { Oval } from  'react-loader-spinner'
@@ -28,11 +26,7 @@ function MenuIndex() {
       const response = await axios.get('/menu',config)
       console.log(response.data)
       setMenus(response.data)
-      setIs_loader(false)
-      setTimeout(()=>{
-        $('#myTable').DataTable();
-      },1000)
-            
+      setIs_loader(false)     
         } catch (error) {
             setIs_loader(false)
             console.log(error.request.message)
@@ -56,53 +50,62 @@ function MenuIndex() {
         
       }
     }
+
+
+    const columns = [
+          {
+            name: <th>Name</th>,
+            selector: (item)=>item.name,
+            sortable:true
+            
+          },
+          {
+            name:<th>Slug</th>,
+            selector:(item)=>item.slug,
+            sortable:true
+          },
+          {
+            name:<th>Created At</th>,
+            selector:(item)=>format(item.createdAt),
+            sortable:true
+          },
+          
+          {
+            name:<th>Action</th>,
+            cell:(item)=><>   
+               <Link className="btn btn-primary mr-3" to={`/admin/menu/edit/${item._id}`}>Edit</Link>
+            <button className="btn btn-danger" onClick={(e)=>distroy(e,item._id)} >Delete</button>
+            </>,
+            
+
+          }
+        ]
+
   return (
-    is_loader?(
-      <Oval
-      height="100"
-      width="100"
-      color='#94142C'
+    <div className="content-wrapper">
+        <div className="container-fluid px-5 mt-5 ">
+
+        <DataTable
+            columns={columns}
+            data={menus}
+            pagination
+            title='Menu'
+            actions={<Link className="btn btn-primary" to='/admin/menu/create' >Create</Link>}
+            progressPending={is_loader}
+            progressComponent={ <Oval
+      height="40"
+      width="40"
+      color='#590696'
       ariaLabel='loading'
       secondaryColor="#ddd"
-    />
-    ):(
-    <div className="content-wrapper">
-        <div className="container ">
-        <Link className="btn btn-secondary float-right mb-2" to='/admin/menu/create' > Add</Link>
-
-        <div className="table-responsive mt-5">
-        <table className="table table-light bg-white table-striped" id ="myTable">
-    <thead>
-    <tr className="trhead">
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Action</th>
-      </tr>
-    </thead>
-    
-    <tbody>
-    {menus.map(menu=>{
-        return(
-
-      <tr key={menu._id}>
-        <th scope="row">{menu._id}</th>
-        <td> {menu.name}</td>
-        <td>
-        <Link className="btn btn-primary mr-3" to={`/admin/menu/edit-menu/${menu._id}`}>Edit</Link>
-        <button className="btn btn-danger" onClick={(e)=>distroy(e,menu._id)} >Delete</button>
-        </td>
-        
-      </tr>
-     
-      )})}
-    </tbody>
+      strokeWidth={4}
+      wrapperStyle={{marginBottom:'50px'}}
+    />}
+        />
   
-  </table>
-    </div>
     </div>
     </div>
     )
-  )
 }
 
 export default MenuIndex

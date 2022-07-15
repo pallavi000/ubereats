@@ -4,7 +4,8 @@ const companySchema = new mongoose.Schema({
     'address':{type:String,required:true},
     'city':{type:String,required:true},
     'country':{type:String,required:true},
-    'postal_code':{type:Number}
+    'postal_code':{type:Number},
+    'image':{type:String,required:true}
   
 },{
     timestamps:true

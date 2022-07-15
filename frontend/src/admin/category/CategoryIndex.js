@@ -1,11 +1,12 @@
 import axios from 'axios'
 import React, { useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import DataTable from 'react-data-table-component';
 
 
-import $ from 'jquery'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { Oval } from  'react-loader-spinner'
+import { format } from 'timeago.js';
 
 function CategoryIndex() {
     const [categories,setCategories] = useState([])
@@ -27,10 +28,7 @@ function CategoryIndex() {
       console.log(response.data)
       setCategories(response.data)
       setIs_loader(false)
-      setTimeout(()=>{
-        $('#myTable').DataTable();
-      },1000)
-            
+      
         } catch (error) {
             setIs_loader(false)
             console.log(error.request.message)
@@ -54,52 +52,63 @@ function CategoryIndex() {
         
       }
     }
+
+    const columns = [
+          {
+            name: <th>Name</th>,
+            selector: (item)=>item.name,
+            sortable:true 
+          },
+          {
+            name:<th>Slug</th>,
+            selector:(item)=>item.slug,
+            sortable:true
+          },
+          {
+            name:<th>Created At</th>,
+            selector:(item)=>format(item.createdAt),
+            sortable:true
+          },
+          {
+            name:<th>Action</th>,
+            cell:(item)=><>   
+               <Link className="btn btn-primary mr-3" to={`/admin/category/edit/${item._id}`}>Edit</Link>
+            <button className="btn btn-danger" onClick={(e)=>distroy(e,item._id)} >Delete</button>
+            </>,
+            
+
+          }
+        ]
+
+
+
+
   return (
-    is_loader?(
-      <Oval
-      height="100"
-      width="100"
-      color='#94142C'
-      ariaLabel='loading'
-      secondaryColor="#ddd"
-    />
-    ):(
+   
     <div className="content-wrapper">
-        <div className="container ">
-        <Link className="btn btn-secondary float-right mb-2" to='/admin/category/create' > Add</Link>
+        <div className="container-fluid mt-5 px-5 ">
 
-        <div className="table-responsive mt-5">
-        <table className="table table-light bg-white table-striped" id ="myTable">
-    <thead>
-    <tr className="trhead">
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Action</th>
-      </tr>
-    </thead>
-    
-    <tbody>
-    {categories.map(category=>{
-        return(
-
-      <tr key={category._id}>
-        <th scope="row">{category._id}</th>
-        <td> {category.name}</td>
-        <td>
-        <Link className="btn btn-primary mr-3" to={`/admin/category/edit-category/${category._id}`}>Edit</Link>
-        <button className="btn btn-danger" onClick={(e)=>distroy(e,category._id)} >Delete</button>
-        </td>
+        <DataTable
+            columns={columns}
+            data={categories}
+            pagination
+            title='Category'
+            actions={<Link className="btn btn-primary" to='/admin/category/create' >Create</Link>}
+            progressPending={is_loader}
+            progressComponent={ <Oval
+            height="40"
+            width="40"
+            color='#590696'
+            ariaLabel='loading'
+            secondaryColor="#ddd"
+            strokeWidth={4}
+            wrapperStyle={{marginBottom:'50px'}}
+          />}
+        />
         
-      </tr>
-     
-      )})}
-    </tbody>
-  
-  </table>
     </div>
     </div>
-    </div>
-    )
+    
   )
 }
 

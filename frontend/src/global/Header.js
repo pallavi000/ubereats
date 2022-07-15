@@ -2,7 +2,7 @@ import React from 'react'
 import Sidebar from './Sidebar'
 
 function Header() {
-let user ={}
+  let user ={}
   if(localStorage.getItem('user')){
      user = JSON.parse(localStorage.getItem('user'))
   }

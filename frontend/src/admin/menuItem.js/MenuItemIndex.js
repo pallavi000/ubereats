@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import DataTable from 'react-data-table-component';
 
 
 import $ from 'jquery'
@@ -54,68 +55,102 @@ function MenuItemIndex() {
         
       }
     }
+
+
+     const columns = [
+      {
+        name:<th>Image</th>,
+        cell:(item)=>
+        <>
+        <img src={item.image} className="py-2" width={70}/>
+        </>,
+      
+      },
+          {
+            name: <th>Name</th>,
+            selector: (item)=>item.name,
+            sortable:true
+            
+          },
+          {
+            name:<th>Detail</th>,
+            selector:(item)=>item.detail,
+            sortable:true
+          },
+          {
+            name:<th>Price</th>,
+            selector:(item)=>item.price,
+            sortable:true
+          },
+          {
+            name:<th>SKU</th>,
+            selector:(item)=>item.sku,
+            sortable:true
+          },
+          {
+            name:<th>Tax</th>,
+            selector:(item)=>item.tax,
+            sortable:true
+          },
+          {
+            name:<th>Menu</th>,
+            selector:(item)=>item.menu_id?.name,
+            sortable:true
+          },
+          {
+            name:<th>Category</th>,
+            selector:(item)=>item.category_id?.name,
+            sortable:true
+          },
+          {
+            name:<th>Company</th>,
+            selector:(item)=>item.company_id?.company_name,
+            sortable:true
+          },
+          {
+            name:<th>Action</th>,
+            cell:(item)=><>   
+               <Link className="btn btn-primary mr-3" to={`/admin/menu-item/edit/${item._id}`}>Edit</Link>
+            <button className="btn btn-danger" onClick={(e)=>distroy(e,item._id)} >Delete</button>
+            </>,
+            grow:2
+
+          }
+        ]
+
+
+
+
+
   return (
-    is_loader?(
-      <Oval
-      height="100"
-      width="100"
-      color='#94142C'
+   
+    <div className="content-wrapper">
+        <div className="container-fluid px-5 mt-5 ">
+        
+
+        <DataTable
+            columns={columns}
+            data={menuItems}
+            pagination
+            title='Menu Items'
+            actions={<Link className="btn btn-primary" to='/admin/menu-item/create' >Create</Link>}
+            progressPending={is_loader}
+            progressComponent={ <Oval
+      height="40"
+      width="40"
+      color='#590696'
       ariaLabel='loading'
       secondaryColor="#ddd"
-    />
-    ):(
-    <div className="content-wrapper">
-        <div className="container ">
-        <Link className="btn btn-secondary float-right mb-2" to='/admin/menuitem/create' > Add</Link>
+      strokeWidth={4}
+      wrapperStyle={{marginBottom:'50px'}}
+    />}
+        />
+      
 
-        <div className="table-responsive mt-5">
-        <table className="table table-light bg-white table-striped" id ="myTable">
-    <thead>
-    <tr className="trhead">
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Detail</th>
-        <th scope="col">Price</th>
-        <th scope="col">SKU</th>
-        <th scope="col">Tax</th>
-        <th scope="col">Menu</th>
-        <th scope="col">Category</th>
-        <th scope="col">Company</th>
-        <th scope="col">Action</th>
-      </tr>
-    </thead>
-    
-    <tbody>
-    {menuItems.map(menu=>{
-        return(
-
-      <tr key={menu._id}>
-        <th scope="row">
-        <img src={menu.image} className="img-fluid " width={100}></img></th>
-        <td> {menu.name}</td>
-        <td> {menu.detail}</td>
-        <td> {menu.price}</td>
-        <td> {menu.sku}</td>
-        <td> {menu.tax}</td>
-        <td>{menu.menu_id?.name}</td>
-        <td> {menu.category_id?.name}</td>
-        <td> {menu.company_id?.company_name}</td>
-
-        <td>
-        <Link className="btn btn-primary mr-3" to={`/admin/menuitem/edit-menuitem/${menu._id}`}>Edit</Link>
-        <button className="btn btn-danger" onClick={(e)=>distroy(e,menu._id)} >Delete</button>
-        </td>
         
-      </tr>
-     
-      )})}
-    </tbody>
-  
-  </table>
     </div>
     </div>
-    </div>
-    )
+    
   )
 }
 

@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as Toastr from 'toastr';
+import '../../../node_modules/toastr/build/toastr.css'
 
 function CategoryCreate() {
     const[name,setName] = useState('')
@@ -28,7 +29,6 @@ function CategoryCreate() {
             console.log(response.data)
             Toastr.success('Category added')
             setIsLoading(false)
-
             navigate(-1)
         } catch (error) {
             console.log(error.request.response)

@@ -4,7 +4,7 @@ const Company = require('../model/Company')
 const Authorization = require('../middleware/companyAuth')
 
 // Get all companys
-router.get('/', Authorization, async(req, res) => {
+router.get('/',async(req, res) => {
     try {
         const companys = await Company.find()
         res.send(companys)
@@ -15,7 +15,7 @@ router.get('/', Authorization, async(req, res) => {
 
 
 // Get company By ID
-router.get('/:id', Authorization, async(req, res) => {
+router.get('/:id', async(req, res) => {
     try {
         const company = await Company.findById(req.params.id)
         res.send(company)
@@ -27,6 +27,28 @@ router.get('/:id', Authorization, async(req, res) => {
 // Update company By ID
 router.put('/:id', Authorization, async(req, res) => {
     try {
+
+        if(req.files.image){
+            const image = req.files.image
+            console.log(image)
+           var r= Math.random()
+            r= r.toString().replace('.','-')
+            var is_error= false
+            const imageName = new Date().getDate()+r+'.'+image.name.split('.').pop()
+
+            var picture = '/assets/images/'+imageName
+            const uploadPath = process.env.IMAGE_UPLOAD_PATH+"/"+imageName
+
+           image.mv(uploadPath,(error)=>{
+            is_error= error
+           })
+           if(is_error){
+            return  res.status(500).send(is_error)
+           }
+           company.image= picture
+        }
+
+
         const company = await Company.findByIdAndUpdate(req.params.id, {
             company_name : req.body.company_name,
             address : req.body.address,

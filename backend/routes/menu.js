@@ -6,7 +6,7 @@ const Authorization = require('../middleware/companyAuth')
 // Get all menus
 router.get('/', Authorization, async(req, res) => {
     try {
-        const menus = await Menu.find()
+        const menus = await Menu.find({'company_id':req.user.company_id}).sort('-_id')
         res.send(menus)
     } catch (error) {
         res.status(500).send(error.message)
@@ -18,7 +18,9 @@ router.post('/', Authorization, async(req, res) => {
     try {
         let menu = new Menu({
             name:req.body.name,
-            slug:req.body.name.replace(' ','-')
+            slug:req.body.name.replace(' ','-').toLowerCase(),
+            company_id:req.user.company_id
+
         })
         menu = await menu.save()
         res.send(menu)
@@ -42,7 +44,9 @@ router.put('/:id', Authorization, async(req, res) => {
     try {
         const menu = await Menu.findByIdAndUpdate(req.params.id, {
             name:req.body.name,
-            slug:req.body.name.replace(' ','-')
+            slug:req.body.name.replace(' ','-').toLowerCase(),
+            company_id:req.user.company_id
+
         },{new: true})
         res.send(menu)
     } catch (error) {

@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useState,useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import * as Toastr from 'toastr';
-// import '../../../../node_modules/toastr/build/toastr.css'
+import '../../../node_modules/toastr/build/toastr.css'
 
 function EditMenu(props) {
     const[menu,setMenu] = useState('')
@@ -45,7 +45,7 @@ const data={
 try {
     const response =await  axios.put('/menu/'+params.id,data,config)
     console.log(response.data)  
-    Toastr.success('menu updated successfully.')
+    Toastr.success('Menu updated successfully.')
     setIsLoading(false)
     navigate(-1)
 } catch (error) {

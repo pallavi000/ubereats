@@ -8,7 +8,7 @@ const Authorization = require('../middleware/companyAuth')
 // Get all menuitems
 router.get('/', Authorization, async(req, res) => {
     try {
-        const menuitems = await Menuitem.find().populate(['company_id','category_id','menu_id'])
+        const menuitems = await Menuitem.find({'company_id':req.user.company_id}).populate(['company_id','category_id','menu_id']).sort('-_id')
         res.send(menuitems)
     } catch (error) {
         res.status(500).send(error.message)
@@ -17,8 +17,8 @@ router.get('/', Authorization, async(req, res) => {
 
 router.get('/elements',Authorization,async(req,res)=>{
     try {
-        const category = await  Category.find()
-        const menu = await Menu.find()
+        const category = await  Category.find({'company_id':req.user.company_id})
+        const menu = await Menu.find({'company_id':req.user.company_id})
         res.send({category,menu})
         
     } catch (error) {
@@ -72,6 +72,7 @@ router.post('/', Authorization, async(req, res) => {
 // Get menuitem By ID
 router.get('/:id', Authorization, async(req, res) => {
     try {
+        
         const menuitem = await Menuitem.findById(req.params.id)
         res.send(menuitem)
     } catch (error) {
